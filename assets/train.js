@@ -41,7 +41,18 @@ $("#add-train-btn").on("click", function(event) {
     var nextTrain = moment().add(minutesTillTrain, "minutes");
     nextTrain = moment(nextTrain).format("HH:mm");
 
-    writeNewPost(trainName, destination, firstTrain, frequency, nextTrain, minutesTillTrain);
+    // Train object to be stored in database
+    var newTrain = {
+        name: trainName,
+        destination: destination,
+        firstTrain: firstTrain,
+        frequency: frequency,
+        nextTrain: nextTrain,
+        minutesTillTrain: minutesTillTrain
+    };
+    database.ref().push(newTrain);
+
+
 
     // Clears all of the text-boxes
     $("#train-name").val("");
@@ -52,76 +63,47 @@ $("#add-train-btn").on("click", function(event) {
 
 // 3. Create Firebase event for adding employee to the database and a row in the html when a user adds an entry
 database.ref().on("child_added", function(childSnapshot, prevChildKey) {
-    // Store everything into a variable, can reuse variable names since they are out of scope.
-    var trainName = childSnapshot.val().name;
-    var destination = childSnapshot.val().destination;
-    var firstTrain = childSnapshot.val().firstTrain;
-    var frequency = childSnapshot.val().frequency;
-    var nextTrain = childSnapshot.val().nextTrain;
-    var minutesTillTrain = childSnapshot.val().minutesTillTrain;
+        // Store everything into a variable, can reuse variable names since they are out of scope.
+        var trainName = childSnapshot.val().name;
+        var destination = childSnapshot.val().destination;
+        var firstTrain = childSnapshot.val().firstTrain;
+        var frequency = childSnapshot.val().frequency;
+        var nextTrain = childSnapshot.val().nextTrain;
+        var minutesTillTrain = childSnapshot.val().minutesTillTrain;
 
-    $("#employee-table > tbody").append("<tr><td>" + trainName + "</td><td>" + destination + "</td><td>" +
-        frequency + "</td><td>" + nextTrain + " PM" + "</td><td>" + minutesTillTrain + "</td></tr>");
-});
-
-
-
-
-
-    // Train object to be stored in database
+        $("#employee-table > tbody").append("<tr><td>" + trainName + "</td><td>" + destination + "</td><td>" +
+            frequency + "</td><td>" + nextTrain + " PM" + "</td><td>" + minutesTillTrain + "</td></tr>");
+    },
+    function(errorObject) {
+        console.log("Errors handled: " + errorObject.code);
+    });
 
 
-    // Uploads employee data to the database
-    
+// writeNewPost(trainName, destination, firstTrain, frequency, nextTrain, minutesTillTrain);
 
 
+// function writeNewPost(trainName, destination, firstTrain, frequency, nextTrain, minutesTillTrain) {
 
-function writeNewPost(trainName, destination, firstTrain, frequency, nextTrain, minutesTillTrain) {
+// * Was not able to figure out the update after every minute*
+
+//     // A post entry.
 
 
+//     // Get a key for a new Post.
+//     var newPostKey = firebase.database().ref().child("when-is-next-train").push().key;
+//     console.log(newPostKey);
 
-  // A post entry.
-    var newTrain = {
-        name: trainName,
-        destination: destination,
-        firstTrain: firstTrain,
-        frequency: frequency,
-        nextTrain: nextTrain,
-        minutesTillTrain: minutesTillTrain
-    };
-    database.ref().push(newTrain);
-  // Get a key for a new Post.
-  var newPostKey = firebase.database().ref().child("when-is-next-train").push().key;
-  console.log(newPostKey);
+//     // Write the new post's data simultaneously in the posts list and the user's post list.
+//     var updates = {};
+//     updates[newPostKey] = newTrain;
+//     // updates["/user-posts/" + uid + "/" + newPostKey] = postData;
 
-  // Write the new post's data simultaneously in the posts list and the user's post list.
-  var updates = {};
-  updates[newPostKey] = newTrain;
-  // updates["/user-posts/" + uid + "/" + newPostKey] = postData;
+//     return firebase.database().ref().update(updates);
+// }
 
-  return firebase.database().ref().update(updates);
-}
+// var myKey = database.ref(/"when-is-next-train"/).key;
 
-// $("#update-btn").on("click", function(){
-//   firebase.database().ref().children('/posts/' + newPostKey).update({ title: "New title", body: "This is the new body" });
-//       });
 
-// database.child("auctions").on('value', function(snapshot) {
+// firebase.child("auctions").on('value', function(snapshot) {
 //     snapshot.ref().update({a: true}); // or snapshot.ref if you're in SDK 3.0 or higher
 // });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

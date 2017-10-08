@@ -2,3 +2,25 @@
 	background-color: black; 
 	color: white;
 }
+
+.panel-primary>.panel-heading{
+	background:black;
+	border:black;
+}
+
+
+.panel-primary {
+	border-color:crimson;
+	border-top:none;
+	border-width: 2px;
+
+}
+
+.btn-primary {
+	background-color: #7d0404;
+	border-color: black;
+}
+
+.btn-primary:hover {
+	background-color: black;
+}
