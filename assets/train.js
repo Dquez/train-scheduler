@@ -1,5 +1,9 @@
 // Users from many different machines must be able to view same train times.
+// Consider updating your "minutes to arrival" and "next train time" text once every minute. This is significantly more challenging; only attempt this if you've completed the actual activity and committed it somewhere on GitHub for safekeeping (and maybe create a second GitHub repo).
 
+// Try adding update and remove buttons for each train. Let the user edit the row's elements-- allow them to change a train's Name, Destination and Arrival Time (and then, by relation, minutes to arrival).
+
+// As a final challenge, make it so that only users who log into the site with their Google or GitHub accounts can use your site. You'll need to read up on Firebase authentication for this bonus exercise.
 
 // 1. Initialize Firebase
 var config = {
@@ -37,18 +41,7 @@ $("#add-train-btn").on("click", function(event) {
     var nextTrain = moment().add(minutesTillTrain, "minutes");
     nextTrain = moment(nextTrain).format("HH:mm");
 
-    // Train object to be stored in database
-    var newTrain = {
-        name: trainName,
-        destination: destination,
-        firstTrain: firstTrain,
-        frequency: frequency,
-        nextTrain: nextTrain,
-        minutesTillTrain: minutesTillTrain
-    };
-
-    // Uploads employee data to the database
-    database.ref().push(newTrain);
+    writeNewPost(trainName, destination, firstTrain, frequency, nextTrain, minutesTillTrain);
 
     // Clears all of the text-boxes
     $("#train-name").val("");
@@ -70,3 +63,65 @@ database.ref().on("child_added", function(childSnapshot, prevChildKey) {
     $("#employee-table > tbody").append("<tr><td>" + trainName + "</td><td>" + destination + "</td><td>" +
         frequency + "</td><td>" + nextTrain + " PM" + "</td><td>" + minutesTillTrain + "</td></tr>");
 });
+
+
+
+
+
+    // Train object to be stored in database
+
+
+    // Uploads employee data to the database
+    
+
+
+
+function writeNewPost(trainName, destination, firstTrain, frequency, nextTrain, minutesTillTrain) {
+
+
+
+  // A post entry.
+    var newTrain = {
+        name: trainName,
+        destination: destination,
+        firstTrain: firstTrain,
+        frequency: frequency,
+        nextTrain: nextTrain,
+        minutesTillTrain: minutesTillTrain
+    };
+    database.ref().push(newTrain);
+  // Get a key for a new Post.
+  var newPostKey = firebase.database().ref().child("when-is-next-train").push().key;
+  console.log(newPostKey);
+
+  // Write the new post's data simultaneously in the posts list and the user's post list.
+  var updates = {};
+  updates[newPostKey] = newTrain;
+  // updates["/user-posts/" + uid + "/" + newPostKey] = postData;
+
+  return firebase.database().ref().update(updates);
+}
+
+// $("#update-btn").on("click", function(){
+//   firebase.database().ref().children('/posts/' + newPostKey).update({ title: "New title", body: "This is the new body" });
+//       });
+
+// database.child("auctions").on('value', function(snapshot) {
+//     snapshot.ref().update({a: true}); // or snapshot.ref if you're in SDK 3.0 or higher
+// });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
